@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['casa']
+
+roboflow:
+  workspace: marias-workspace-grsiu
+  project: house_project-ffi14
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/marias-workspace-grsiu/house_project-ffi14/dataset/1

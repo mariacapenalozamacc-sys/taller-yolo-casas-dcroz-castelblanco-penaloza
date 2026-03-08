@@ -18,7 +18,15 @@ YOLO-house-identifier/
 │   ├── inferencia.py    # Script principal para ejecutar el sistema
 │   ├── train_yolo.py 
 │   ├── validation.py
-│   └── utils.py         
+│   └── utils.py 
+├── images/
+│   ├── train
+│   ├── test
+│   ├── validation
+├── models/
+│   ├── train
+│   ├── test
+│   ├── validation
 ├── .gitignore           # Archivos y carpetas excluidos del control de versiones
 ├── README.md            # Documentación del proyecto
 └── requirements.txt     # Lista de dependencias del proyecto
@@ -31,6 +39,8 @@ YOLO-house-identifier/
 pip install ultralytics==8.4.21
 
 pip install supervision==0.27.0.post1
+
+pip install albumentations==2.0.8
 ```
 
 # Construcción de la Herramienta
