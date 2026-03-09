@@ -10,29 +10,35 @@ YOLO-house-idenfifier es una herramienta que permite el etiquetado de fachadas d
 # Estructura del repositorio
 
 ```text
-YOLO-house-identifier/
+taller-yolo-casas-dcroz-castelblanco-penaloza/
 │
-├── examples/            
+├── .vscode/
 │
-├── src/
-│   ├── inference.py   # Funciones para 
-│   ├── train_yolo.py  # SCript para recrear entrenamiento
-│   ├── validation.py  # Script de validacion y clasificacion del dataset
-│   └── utils.py       # Funciones recurrentes y sistema de rutas
+├── error analysis/   # Script de validacion y clasificacion del dataset
+│   ├── false_positives
+│   ├── false_negatives 
+│
 ├── images/
 │   ├── confg
 │      ├── data.yalm 
 │      ├── house_project.v1i.yolov11.zip # Etiquietas generadas desde roboflow
-│   ├── train  # Imagenes y etiquetas de entrenamiento
-│   ├── test   # Imagenes y etiquetas de evaluación
-│   ├── validation   # Imagenes y etiquetas de validación
+│
 ├── models/
-│   ├── train
-│   ├── test
-│   ├── validation
-├── .gitignore           # Archivos y carpetas excluidos del control de versiones
+│   ├── runs_house_model/house_yolo
+│   ├── __init__.py
+│   ├── house_yolo.pt
+│   ├── yolo11n.pt
+│     
+│
+├── src/
+│   ├── __pycache__
+│   ├── inference.py   # Funciones
+│   ├── train_yolo.py  # SCript para recrear entrenamiento
+│   └── utils.py       # Funciones recurrentes y sistema de rutas
 ├── README.md            # Documentación del proyecto
-└── requirements.txt     # Lista de dependencias del proyecto
+├──   requirements.txt     # Lista de dependencias del proyecto
+├──   temp_main.ipynb
+└──   test_validacion.ipynb
 ```
 
 
