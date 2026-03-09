@@ -153,9 +153,9 @@ Resultados obtenidos:
 | False Positives | 2 |
 | False Negatives | 4 |
 
-### Ejemplos de detección correcta
+### Ejemplo de detección correcta
 
-En las siguientes imágenes el modelo logra identificar correctamente las fachadas de casas presentes en la escena.
+En la siguientes imágen el modelo logra identificar correctamente la fachadas de una casa presente en la escena.
 
 /content/train/images/real_091_San_Andr_s_San_Andr_s_y_Providencia_Colombia_-_panoramio_2__png.rf.8dbe952a3b3d564f61e63201a765edb5.jpg
 
