@@ -84,7 +84,7 @@ Instalar las dependencias definidas en el archivo requirements.txt:
 
 pip install -r requirements.txt
 
-as principales librerías utilizadas son:
+Las principales librerías utilizadas son:
 
 ultralytics
 
