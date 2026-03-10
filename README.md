@@ -146,7 +146,6 @@ Las métricas principales utilizadas fueron:
 
 - **Precision**
 - **Recall**
-- **mAP@0.5**
 - **Falsos Positivos (FP)**
 - **Falsos Negativos (FN)**
 
@@ -161,13 +160,13 @@ Resultados obtenidos:
 
 ### Ejemplo de detección correcta
 
-En la siguientes imágen el modelo logra identificar correctamente la fachadas de una casa presente en la escena.
+En la siguiente imágen, el modelo logra identificar correctamente la fachadas de una casa presente en la escena.
 
 /content/train/images/real_091_San_Andr_s_San_Andr_s_y_Providencia_Colombia_-_panoramio_2__png.rf.8dbe952a3b3d564f61e63201a765edb5.jpg
 
 ### Ejemplos de errores de detección
 
-Se identificaron algunos casos donde el modelo presenta errores:
+Se identificaron algunos casos donde el modelo presenta errores y los guarda en la carpeta error_analysis:
 
 **Falsos positivos (FP)**  
 El modelo detecta una casa en objetos visualmente similares, como edificios o estructuras arquitectónicas.
