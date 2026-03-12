@@ -1,13 +1,14 @@
 from . import utils
 #from IPython.display import Image as IPyImage
 from PIL import Image
-import requests
 from ultralytics import YOLO
 import supervision as sv
 
 
 def load_model():
     model = YOLO(utils.models_path / utils.model_name)
+    # model = (YOLO(utils.models_path / utils.base_model_name)
+    #         .load(utils.best_weights_path))
     return model    
 
 def load_image(image_path: str):

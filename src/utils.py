@@ -10,13 +10,14 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 
 # 
 base_model_name = 'yolo11n.pt'
-project_name = 'house_project'
+project_name = 'house_yolo'
 project = "runs_house_model"
 model_name = "house_yolo.pt"
 
 # Paths
 images_path = PROJECT_ROOT / "images"
 models_path = PROJECT_ROOT / "models"
+best_weights_path = models_path / project / project_name / "weights/best.pt"
 base_zip_path = images_path / "conf/house_project.v1i.yolov11.zip"
 train_yaml_path =  images_path / "conf/data.yaml"
 
