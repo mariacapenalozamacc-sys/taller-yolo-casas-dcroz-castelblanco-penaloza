@@ -205,7 +205,7 @@ Resultados obtenidos:
 
 En la siguiente imágen, el modelo logra identificar correctamente la fachadas de una casa presente en la escena.
 
-![Alt text](./examples\real_041_MI_HOUSE_png.rf.0e452c2b0051f1281e7c048c3f3d5605.jpg)
+![Alt text](./examples/real_041_MI_HOUSE_png.rf.0e452c2b0051f1281e7c048c3f3d5605.jpg)
 
 ### Ejemplos de errores de detección
 
@@ -218,7 +218,7 @@ El modelo detecta una casa en objetos visualmente similares, como edificios o es
 
  En rojo se muestran las predicciones, y en verde las etiquetas.
 
-![Alt text](.\error_analysis\false_positives\real_049_Providencia_Colombia_-_panoramio_29__png.rf.c52bfec95485cfc75f327cb31ee0c41e.jpg)
+![Alt text](./error_analysis/false_positives/real_049_Providencia_Colombia_-_panoramio_29__png.rf.c52bfec95485cfc75f327cb31ee0c41e.jpg)
 
 **Falsos negativos (FN)**  
 El modelo no detecta casas cuando:
@@ -231,7 +231,7 @@ El modelo no detecta casas cuando:
 
  En verde se muestran las predicciones, y en rojo las etiquetas.
 
-![Alt text](.\error_analysis\false_negatives\real_076_Kogisiedlung_png.rf.511c7d5c9b0d54fc0a922aa31e4beb32.jpg)
+![Alt text](./error_analysis/false_negatives/real_076_Kogisiedlung_png.rf.511c7d5c9b0d54fc0a922aa31e4beb32.jpg)
 
 # Limitaciones y pasos futuros recomendados
 
