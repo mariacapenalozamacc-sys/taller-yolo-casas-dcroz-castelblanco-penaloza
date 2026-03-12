@@ -11,8 +11,21 @@ YOLO-house-idenfifier es una herramienta que permite el etiquetado de fachadas d
 
 ```text
 taller-yolo-casas-dcroz-castelblanco-penaloza/
+
+├── API/   # Script de validacion y clasificacion del dataset
+│   ├── API_inference.py
 │
-├── .vscode/
+├── models/
+│   ├── runs_house_model/house_yolo
+│   ├── __init__.py
+│   ├── house_yolo.pt
+│   ├── yolo11n.pt
+│     
+├── src/
+│   ├── __init__.py
+│   ├── inference.py   # Funciones
+│   ├── train_yolo.py  # SCript para recrear entrenamiento
+│   └── utils.py       # Funciones recurrentes y sistema de rutas
 │
 ├── error analysis/   # Script de validacion y clasificacion del dataset
 │   ├── false_positives
@@ -22,23 +35,15 @@ taller-yolo-casas-dcroz-castelblanco-penaloza/
 │   ├── confg
 │      ├── data.yalm 
 │      ├── house_project.v1i.yolov11.zip # Etiquietas generadas desde roboflow
+│   ├── test
+│      ├── images
+│      ├── labels
+│   ├── train
+│   ├── valid
 │
-├── models/
-│   ├── runs_house_model/house_yolo
-│   ├── __init__.py
-│   ├── house_yolo.pt
-│   ├── yolo11n.pt
-│     
-│
-├── src/
-│   ├── __pycache__
-│   ├── inference.py   # Funciones
-│   ├── train_yolo.py  # SCript para recrear entrenamiento
-│   └── utils.py       # Funciones recurrentes y sistema de rutas
 ├── README.md            # Documentación del proyecto
-├──   requirements.txt     # Lista de dependencias del proyecto
-├──   temp_main.ipynb
-└──   test_validacion.ipynb
+├── requirements.txt     # Lista de dependencias del proyecto
+
 ```
 
 
@@ -53,6 +58,10 @@ pip install ultralytics==8.4.21
 pip install supervision==0.27.0.post1
 
 pip install albumentations==2.0.8
+
+pip install fastapi==0.135.1
+
+pip install python_multipart==0.0.22
 ```
 Si requiere una instalación local con uso de GPU, consultar requerimientos de [ultralytics](https://docs.ultralytics.com/quickstart/) para instalación de Torch con CUDA.
 
@@ -75,36 +84,30 @@ A continuación se describen los pasos necesarios para reproducir el entrenamien
 
 ### 1. Clonar el repositorio
 
+```bash
+
 git clone https://github.com/<usuario>/YOLO-house-identifier.git
 cd YOLO-house-identifier
+
+```
 
 ### 2. Instalar dependencias
 
 Instalar las dependencias definidas en el archivo requirements.txt:
 
+```bash
 pip install -r requirements.txt
+```
 
-Las principales librerías utilizadas son:
+Revisar sección de requerimientos para más detalles.
 
-ultralytics
+### 3. Preparar el dataset (Opcional)
 
-supervision
-
-albumentations
-
-numpy
-
-### 3. Preparar el dataset
-
-Descargar el dataset desde el repositorio público de Google Drive:
-
-https://drive.google.com/drive/folders/1F0ZShSpEq7DVzTN4xrlTPYH8QZA--fTg
-
-Una vez descargado, ubicar la estructura de carpetas dentro del directorio images/ del proyecto.
-
-El archivo de configuración del dataset se encuentra en:
+Puede validar que los archivos de entrenamiento esten presentes para la rutina de entrnamiento en la ruta:
 
 images/conf/house.project.v1.yolo11.zip
+
+La rutina de entrnamiento (train_model de src.train_yolo) ya hace la descompresión de las carpetas, no obstante, puede hacer la descompresión manual o usando la función unzip_dataset() de la liberia src.utils.
 
 ### 4. Entrenar el modelo
 
@@ -118,21 +121,61 @@ Los pesos generados durante el entrenamiento se almacenan en la carpeta:
 
 models/runs_house_model/house_yolo/weights
 
-### 5. Entrenar el modelo
+La rutina también crea un modelo listo para importar con los pesos aplicados en la ruta 
 
-Para realizar detección de casas sobre imágenes nuevas ejecutar:
+modesl/house_yolo.pt
 
-python src/inference.py
-
-El script cargará el modelo entrenado y generará detecciones sobre las imágenes de prueba, dibujando los bounding boxes correspondientes.
-
-### 6. Entrenar el modelo
+### 5. Evaluar el modelo
 
 Para evaluar el desempeño del modelo y calcular métricas como falsos positivos (FP) y falsos negativos (FN), ejecutar:
 
 python models/runs_house_model/house_yolo
 
 Esto analiza las predicciones del modelo sobre el conjunto de validación y genera métricas de desempeño.
+
+Si bien en la carpeta de las corridas del modelo tenemos ejemplos de las clasificaciones, y todas las métricas de evaluación y seguimiento de la entrenamiento epoca por epoca, se hace la clasificación de las imágenes según la matriz de confusión para tener la totalidad de ejemplo de FP y FN.
+
+### 5. Usar el modelo
+
+El script de inferencia cargará el modelo entrenado y generará detecciones sobre las imágenes de prueba, dibujando los bounding boxes correspondientes. Se puede emplear de 3 modos:
+
+### Mediante liberia (Python)
+
+Estructura
+
+```python
+from src.inference import infer
+res = inf.infer(image_path = './input_path/image.jpg' )
+```
+
+**Ejemplo**
+```python
+from src import inference as inf
+res = inf.infer(image_path = './images/valid/images/real_041_MI_HOUSE_png.rf.0e452c2b0051f1281e7c048c3f3d5605.jpg'
+                ,out_path= './examples' )
+```
+
+
+### Mediante terminal (CLI)
+
+```bash
+python src/inference.py ./input_path/image.jpg --output./output_path
+
+```
+
+**Ejemplo**
+```bash
+python ./src/inference.py images\valid\images\real_011_Casa_de_Cundinamarca_png.rf.b1da1d02fbd326e25e036adc2c977503.jpg -o./examples
+```
+
+### Mediante API
+
+Para realizar detección de casas sobre imágenes nuevas ejecutar:
+
+
+
+
+
 
 ---
 
@@ -162,14 +205,20 @@ Resultados obtenidos:
 
 En la siguiente imágen, el modelo logra identificar correctamente la fachadas de una casa presente en la escena.
 
-/content/train/images/real_091_San_Andr_s_San_Andr_s_y_Providencia_Colombia_-_panoramio_2__png.rf.8dbe952a3b3d564f61e63201a765edb5.jpg
+![Alt text](./examples\real_041_MI_HOUSE_png.rf.0e452c2b0051f1281e7c048c3f3d5605.jpg)
 
 ### Ejemplos de errores de detección
 
-Se identificaron algunos casos donde el modelo presenta errores y los guarda en la carpeta error_analysis:
+Se identificaron algunos casos donde el modelo presenta errores y los guarda en la carpeta error_analysis.
 
-**Falsos positivos (FP)**  
+#### **Falsos positivos (FP)**  
 El modelo detecta una casa en objetos visualmente similares, como edificios o estructuras arquitectónicas.
+
+**Ejemplo**
+
+ En rojo se muestran las predicciones, y en verde las etiquetas.
+
+![Alt text](.\error_analysis\false_positives\real_049_Providencia_Colombia_-_panoramio_29__png.rf.c52bfec95485cfc75f327cb31ee0c41e.jpg)
 
 **Falsos negativos (FN)**  
 El modelo no detecta casas cuando:
@@ -177,6 +226,12 @@ El modelo no detecta casas cuando:
 - la fachada está parcialmente oculta
 - la iluminación es baja
 - la casa aparece muy pequeña en la imagen
+
+**Ejemplo**
+
+ En verde se muestran las predicciones, y en rojo las etiquetas.
+
+![Alt text](.\error_analysis\false_negatives\real_076_Kogisiedlung_png.rf.511c7d5c9b0d54fc0a922aa31e4beb32.jpg)
 
 # Limitaciones y pasos futuros recomendados
 
