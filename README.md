@@ -12,30 +12,30 @@ YOLO-house-idenfifier es una herramienta que permite el etiquetado de fachadas d
 ```text
 taller-yolo-casas-dcroz-castelblanco-penaloza/
 
-├── API/   # Script de validacion y clasificacion del dataset
+├── API/   # Aplicaciòn por FastAPI
 │   ├── API_inference.py
 │
-├── models/
+├── models/ # Modelos e historial de entrenamientos
 │   ├── runs_house_model/house_yolo
-│   ├── __init__.py
 │   ├── house_yolo.pt
 │   ├── yolo11n.pt
 │     
 ├── src/
-│   ├── __init__.py
-│   ├── inference.py   # Funciones
+│   ├── inference.py   # Script para ejecutar ingerencia
 │   ├── train_yolo.py  # SCript para recrear entrenamiento
 │   └── utils.py       # Funciones recurrentes y sistema de rutas
 │
-├── error analysis/   # Script de validacion y clasificacion del dataset
+├── error analysis/   # Ejemplos de TP y tutorial API
+│
+├── error analysis/   # Resultados de entrenamiento custom
 │   ├── false_positives
 │   ├── false_negatives 
 │
-├── images/
+├── images/          # Imagenes para entrenamiento
 │   ├── confg
 │      ├── data.yalm 
 │      ├── house_project.v1i.yolov11.zip # Etiquietas generadas desde roboflow
-│   ├── test
+│   ├── test # Requiere descomprimir .zip (ver secciòn 3)
 │      ├── images
 │      ├── labels
 │   ├── train
@@ -106,9 +106,13 @@ Revisar sección de requerimientos para más detalles.
 
 Puede validar que los archivos de entrenamiento esten presentes para la rutina de entrnamiento en la ruta:
 
-images/conf/house.project.v1.yolo11.zip
+`images/conf/house.project.v1.yolo11.zip`
 
 La rutina de entrnamiento (train_model de src.train_yolo) ya hace la descompresión de las carpetas, no obstante, puede hacer la descompresión manual o usando la función unzip_dataset() de la liberia src.utils.
+
+> [!NOTE]
+> Si no planea ejecutar la rutina de entrenamiento, **DEBE descomprimir el `house.project.v1.yolo11.zip`** para poder probar las otras funcionalidades o validar los ejemplos.
+> **No se incluyen las imagenes en el repositorio, dado que los nombres largos pueden interferir al hacer pull.**
 
 ### 4. Entrenar el modelo
 
@@ -118,15 +122,15 @@ Para entrenar el modelo ejecutar:
 python src/train.py
 ```
 
-Este script entrena el modelo YOLO utilizando el dataset definido en data.yaml.
+Este script entrena el modelo YOLO utilizando el dataset definido en `data.yaml`.
 
 Los pesos generados durante el entrenamiento se almacenan en la carpeta:
 
-models/runs_house_model/house_yolo/weights
+`models/runs_house_model/house_yolo/weights`
 
 La rutina también crea un modelo listo para importar con los pesos aplicados en la ruta 
 
-modesl/house_yolo.pt
+`modesl/house_yolo.pt`
 
 ### 5. Evaluar el modelo
 
