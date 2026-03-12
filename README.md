@@ -233,7 +233,14 @@ Resultados obtenidos:
 | False Positives | 2 |
 | False Negatives | 4 |
 
-### Ejemplo de detección correcta
+Interpretación de las métricas
+
+|Métrica | Valor | Interpretación |
+|------|------|------|
+|Precision | 0.8571 | 85.7% de las detecciones son correctas
+|Recall | 0.75 | detecta el 75% de las casas reales
+|mAP@0.5 | 0.838 |	El modelo tiene 83.8 % de precisión promedio en detección de casas con IoU ≥ 0.5.
+
 
 En la siguiente imágen, el modelo logra identificar correctamente la fachadas de una casa presente en la escena.
 
