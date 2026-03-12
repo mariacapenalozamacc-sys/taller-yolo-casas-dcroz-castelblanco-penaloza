@@ -25,7 +25,7 @@ taller-yolo-casas-dcroz-castelblanco-penaloza/
 │   ├── train_yolo.py  # SCript para recrear entrenamiento
 │   └── utils.py       # Funciones recurrentes y sistema de rutas
 │
-├── error analysis/   # Ejemplos de TP y tutorial API
+├── examples/   # Ejemplos de TP y tutorial API
 │
 ├── error analysis/   # Resultados de entrenamiento custom
 │   ├── false_positives
