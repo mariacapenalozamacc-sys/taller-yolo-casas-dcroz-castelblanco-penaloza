@@ -229,6 +229,7 @@ Resultados obtenidos:
 |------|------|
 | Precision | 0.8571 |
 | Recall |  0.7500 |
+| mAP@0.5 |  0.838 |
 | False Positives | 2 |
 | False Negatives | 4 |
 
