@@ -5,8 +5,11 @@ PROJECT_ROOT = Path.cwd().parent
 
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+if str(Path.cwd()) not in sys.path:
+    sys.path.insert(0, str(Path.cwd()))
 
-import utils
+
+from src import utils
 #from IPython.display import Image as IPyImage
 from PIL import Image
 from ultralytics import YOLO

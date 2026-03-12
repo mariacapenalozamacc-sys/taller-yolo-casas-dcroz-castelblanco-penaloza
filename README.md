@@ -62,6 +62,8 @@ pip install albumentations==2.0.8
 pip install fastapi==0.135.1
 
 pip install python_multipart==0.0.22
+
+pip install uvicorn==0.24.0  
 ```
 Si requiere una instalación local con uso de GPU, consultar requerimientos de [ultralytics](https://docs.ultralytics.com/quickstart/) para instalación de Torch con CUDA.
 
@@ -86,8 +88,7 @@ A continuación se describen los pasos necesarios para reproducir el entrenamien
 
 ```bash
 
-git clone https://github.com/<usuario>/YOLO-house-identifier.git
-cd YOLO-house-identifier
+git clone https://github.com/<usuario>/taller-yolo-casas-dcroz-castelblanco-penaloza
 
 ```
 
@@ -113,7 +114,9 @@ La rutina de entrnamiento (train_model de src.train_yolo) ya hace la descompresi
 
 Para entrenar el modelo ejecutar:
 
-python src/train_yolo.py
+```bash
+python src/train.py
+```
 
 Este script entrena el modelo YOLO utilizando el dataset definido en data.yaml.
 
@@ -129,7 +132,9 @@ modesl/house_yolo.pt
 
 Para evaluar el desempeño del modelo y calcular métricas como falsos positivos (FP) y falsos negativos (FN), ejecutar:
 
-python models/runs_house_model/house_yolo
+```bash
+python src/validation.py
+```
 
 Esto analiza las predicciones del modelo sobre el conjunto de validación y genera métricas de desempeño.
 
@@ -170,14 +175,36 @@ python ./src/inference.py images\valid\images\real_011_Casa_de_Cundinamarca_png.
 
 ### Mediante API
 
-Para realizar detección de casas sobre imágenes nuevas ejecutar:
+Debe hacer la conexión a la API. Asegurese de estar en el directorio de la API para poder iniciarla
+```bash
+cd ./API
+```
+
+Estando en el directorio `./API`, puede ejecutar lo siguiente para iniciar el servicio.
+
+```bash
+uvicorn API_inference:app --reload
+```
+
+**Ejemplo**
+
+En nuestro ejemplo, el servicio quedó en `http://127.0.0.1:8000/docs/`, de donde podemos probar los mètodos predict y predic_image. (Revise en consola donde esta corriendo la aplicaciòn)
+
+![Step1API](./examples/API_tutorial_01.png)
+
+En este ejemplo, probaremos el método predict_image.Puede cargar el archivo mediante el toolkit de adjuntar.
+
+![Step2API](./examples/API_tutorial_02.png)
+
+Con el archivo adjunto, haga el llamado mediante el botòn de Exceute
+
+![Step3API](./examples/API_tutorial_03.png)
+
+Verá que el método trae una ventana emergente con la información de salida
 
 
+![Step4API](./examples/API_tutorial_04.png)
 
-
-
-
----
 
 # Resultados (métricas) y ejemplos de detección
 
@@ -205,7 +232,7 @@ Resultados obtenidos:
 
 En la siguiente imágen, el modelo logra identificar correctamente la fachadas de una casa presente en la escena.
 
-![Alt text](./examples/real_041_MI_HOUSE_png.rf.0e452c2b0051f1281e7c048c3f3d5605.jpg)
+![Ejemplo_TP](./examples/real_041_MI_HOUSE_png.rf.0e452c2b0051f1281e7c048c3f3d5605.jpg)
 
 ### Ejemplos de errores de detección
 
@@ -218,7 +245,7 @@ El modelo detecta una casa en objetos visualmente similares, como edificios o es
 
  En rojo se muestran las predicciones, y en verde las etiquetas.
 
-![Alt text](./error_analysis/false_positives/real_049_Providencia_Colombia_-_panoramio_29__png.rf.c52bfec95485cfc75f327cb31ee0c41e.jpg)
+![Ejemplo_FP](./error_analysis/false_positives/real_049_Providencia_Colombia_-_panoramio_29__png.rf.c52bfec95485cfc75f327cb31ee0c41e.jpg)
 
 **Falsos negativos (FN)**  
 El modelo no detecta casas cuando:
@@ -231,7 +258,7 @@ El modelo no detecta casas cuando:
 
  En verde se muestran las predicciones, y en rojo las etiquetas.
 
-![Alt text](./error_analysis/false_negatives/real_076_Kogisiedlung_png.rf.511c7d5c9b0d54fc0a922aa31e4beb32.jpg)
+![Ejemplo FN](./error_analysis/false_negatives/real_076_Kogisiedlung_png.rf.511c7d5c9b0d54fc0a922aa31e4beb32.jpg)
 
 # Limitaciones y pasos futuros recomendados
 
