@@ -278,29 +278,6 @@ El modelo de inferencia usa por defecto los pesos configurados en `src/utils.py`
 
 ---
 
-## 12. Notas importantes
-
-- El nombre correcto de la carpeta es `error_analysis/`, no `error analysis/`.
-- El script correcto de entrenamiento es `src/train_yolo.py`, no `src/train.py`.
-- El archivo de configuración es `images/data.yaml`, no `data.yalm`.
-- La carpeta correcta es `images/conf/`, no `confg`.
-- La carpeta correcta es `models/`, no `modesl/`.
-- Para reproducibilidad completa, conviene documentar mejor de dónde sale el dataset y cómo reconstruir `train/`, `valid/` y `test/` si no vienen versionados en Git.
-
----
-
-## 13. Mejoras recomendadas para el repositorio
-
-Algunas mejoras que harían este proyecto más fácil de usar por terceros:
-
-1. Corregir el `requirements.txt` para que tenga una dependencia por línea.
-2. Documentar explícitamente cómo se obtiene o descomprime el dataset.
-3. Agregar ejemplos reproducibles de entrenamiento y validación.
-4. Incluir una sección de métricas con trazabilidad clara al script o experimento que las generó.
-5. Agregar una sección de solución de problemas comunes.
-
----
-
-## 14. Autores
+## 12.  Autores
 
 Repositorio desarrollado para el taller de detección de casas con YOLO por Miguel CastelBlanco, ANthony D'croz y Maria Camila Peñaloza.
