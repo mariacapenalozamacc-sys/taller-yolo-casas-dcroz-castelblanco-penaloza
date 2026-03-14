@@ -1,306 +1,365 @@
-# Detección de Casas en Imágenes Colombianas usando YOLO
 
-Proyecto para detección de fachadas de casas en imágenes usando un modelo basado en YOLO.  
-El repositorio permite:
+# Proyecto YOLO - Identificación de Casas con Modelo Basado en YOLO
 
-- ejecutar inferencia sobre imágenes individuales,
-- usar el modelo desde Python como librería,
-- exponer el modelo mediante una API con FastAPI,
-- reentrenar el modelo,
-- y revisar resultados de validación / análisis de errores.
 
----
+# Descripción general del proyecto
 
-## 1. Estructura del repositorio
+
+YOLO-house-idenfifier es una herramienta que permite el etiquetado de fachadas de casas. Puede importara libreria o mediante una API
+
+# Estructura del repositorio
 
 ```text
 taller-yolo-casas-dcroz-castelblanco-penaloza/
-├── API/
+
+├── API/   # Aplicaciòn por FastAPI
 │   ├── API_inference.py
-│   └── __init__.py
 │
-├── error_analysis/
-│   └── ...
-│
-├── examples/
-│   ├── API_tutorial_01.png
-│   ├── API_tutorial_02.png
-│   ├── API_tutorial_03.png
-│   ├── API_tutorial_04.png
-│   └── imágenes de ejemplo
-│
-├── images/
-│   ├── conf/
-│   └── data.yaml
-│
-├── models/
-│   ├── runs_house_model/ house_yolo
-│   ├── __init__.py
+├── models/ # Modelos e historial de entrenamientos
+│   ├── runs_house_model/house_yolo
 │   ├── house_yolo.pt
-│   └── yolo11n.pt
-│
+│   ├── yolo11n.pt
+│     
 ├── src/
-│   ├── __init__.py
-│   ├── inference.py
-│   ├── train_yolo.py
-│   ├── utils.py
-│   └── validation.py
+│   ├── inference.py   # Script para ejecutar ingerencia
+│   ├── train_yolo.py  # SCript para recrear entrenamiento
+│   └── utils.py       # Funciones recurrentes y sistema de rutas
 │
-├── README.md
-└── requirements.txt
+├── examples/   # Ejemplos de TP y tutorial API
+│
+├── error analysis/   # Resultados de entrenamiento custom
+│   ├── false_positives
+│   ├── false_negatives 
+│
+├── images/          # Imagenes para entrenamiento
+│   ├── confg
+│      ├── data.yalm 
+│      ├── house_project.v1i.yolov11.zip # Etiquietas generadas desde roboflow
+│   ├── test # Requiere descomprimir .zip (ver secciòn 3)
+│      ├── images
+│      ├── labels
+│   ├── train
+│   ├── valid
+│
+├── README.md            # Documentación del proyecto
+├── requirements.txt     # Lista de dependencias del proyecto
+
 ```
 
-> Nota: la carpeta `images/` visible en el repositorio contiene `conf/` y `data.yaml`.  
-> Si el entrenamiento o la validación requieren `train/`, `valid/` y `test/`, estos deben generarse o descomprimirse a partir del dataset configurado por el proyecto.
 
----
+# Requerimientos
 
-## 2. Requisitos
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ultralytics)
 
-Se recomienda usar **Python 3.10+**.
 
-Dependencias principales del proyecto:
+```bash
+pip install ultralytics==8.4.21
 
-- `ultralytics==8.4.21`
-- `supervision==0.27.0.post1`
-- `albumentations==2.0.8`
-- `fastapi==0.135.1`
-- `python_multipart==0.0.22`
-- `uvicorn==0.24.0`
+pip install supervision==0.27.0.post1
 
-Instalación:
+pip install albumentations==2.0.8
+
+pip install fastapi==0.135.1
+
+pip install python_multipart==0.0.22
+
+pip install uvicorn==0.24.0  
+```
+Si requiere una instalación local con uso de GPU, consultar requerimientos de [ultralytics](https://docs.ultralytics.com/quickstart/) para instalación de Torch con CUDA.
+
+# Construcción de la Herramienta
+
+## Datos de entrenamiento
+
+Se obtuvieron las imágenes del siguiente [repositorio](https://drive.google.com/drive/folders/1F0ZShSpEq7DVzTN4xrlTPYH8QZA--fTg?usp=drive_link), con 69 casa donde podríamos identificar fachadas.
+
+En las imágenes se hizo el etiquetado de la catergoría casa usando [Roboflow](https://roboflow.com/), las cuales se pueden consultar en este [proyecto](https://universe.roboflow.com/marias-workspace-grsiu/house_project-ffi14/dataset/1). Los datos se dividieron en 52 entradas para entrenamiento, 10 para validación y 7 para pruebas.
+
+## Arquitectura del modelo
+
+Se eligió usar un modelo [YOLO11](https://docs.ultralytics.com/es/models/yolo11/) y hacer un 
+Fine Tunning para mejorar la detección fr nuestras características (casas).
+
+## Instrucciones para reproducir el entrenamiento y la inferencia
+
+A continuación se describen los pasos necesarios para reproducir el entrenamiento del modelo y ejecutar inferencia sobre nuevas imágenes.
+
+### 1. Clonar el repositorio
+
+```bash
+
+git clone https://github.com/<usuario>/taller-yolo-casas-dcroz-castelblanco-penaloza
+
+```
+
+### 2. Instalar dependencias
+
+Instalar las dependencias definidas en el archivo requirements.txt:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Si vas a entrenar con GPU, instala también la versión de `torch` compatible con tu CUDA según la documentación oficial de Ultralytics/PyTorch.
+Revisar sección de requerimientos para más detalles.
 
----
+### 3. Preparar el dataset (Opcional)
 
-## 3. Clonar el repositorio
+Puede validar que los archivos de entrenamiento esten presentes para la rutina de entrnamiento en la ruta:
+
+`images/conf/house.project.v1.yolo11.zip`
+
+La rutina de entrnamiento (train_model de src.train_yolo) ya hace la descompresión de las carpetas, no obstante, puede hacer la descompresión manual o usando la función unzip_dataset() de la liberia src.utils.
+
+> [!NOTE]
+> Si no planea ejecutar la rutina de entrenamiento, **DEBE descomprimir el `house.project.v1.yolo11.zip`** para poder probar las otras funcionalidades o validar los ejemplos.
+> **No se incluyen las imagenes en el repositorio, dado que los nombres largos pueden interferir al hacer pull.**
+
+### 4. Entrenar el modelo
+
+Para entrenar el modelo ejecutar:
 
 ```bash
-git clone https://github.com/mariacapenalozamacc-sys/taller-yolo-casas-dcroz-castelblanco-penaloza.git
-cd taller-yolo-casas-dcroz-castelblanco-penaloza
+python src/train.py
 ```
 
----
+Este script entrena el modelo YOLO utilizando el dataset definido en `data.yaml`.
 
-## 4. Preparación de datos
+Los pesos generados durante el entrenamiento se almacenan en la carpeta:
 
-El proyecto usa un archivo de configuración de datos en:
+`models/runs_house_model/house_yolo/weights`
 
-```text
-images/data.yaml
+La rutina también crea un modelo listo para importar con los pesos aplicados en la ruta 
+
+`modesl/house_yolo.pt`
+
+### 5. Evaluar el modelo
+
+Para evaluar el desempeño del modelo y calcular métricas como falsos positivos (FP) y falsos negativos (FN), ejecutar:
+
+```bash
+python src/validation.py
 ```
 
-Además, la carpeta `images/conf/` contiene archivos de configuración asociados al dataset.
+Esto analiza las predicciones del modelo sobre el conjunto de validación y genera métricas de desempeño.
 
-Dependiendo de cómo esté implementado `utils.py`, el flujo de entrenamiento/validación puede descomprimir automáticamente el dataset.  
-Aun así, antes de entrenar debes verificar que existan las carpetas esperadas por YOLO, por ejemplo:
+Si bien en la carpeta de las corridas del modelo tenemos ejemplos de las clasificaciones, y todas las métricas de evaluación y seguimiento de la entrenamiento epoca por epoca, se hace la clasificación de las imágenes según la matriz de confusión para tener la totalidad de ejemplo de FP y FN.
 
-```text
-images/train/images
-images/train/labels
-images/valid/images
-images/valid/labels
-images/test/images
-images/test/labels
-```
+### 5. Usar el modelo
 
-Si esas carpetas no existen todavía, revisa la lógica de preparación de datos en `src/utils.py` y el dataset comprimido asociado al proyecto.
+El script de inferencia cargará el modelo entrenado y generará detecciones sobre las imágenes de prueba, dibujando los bounding boxes correspondientes. Se puede emplear de 3 modos:
 
----
+### Mediante liberia (Python)
 
-## 5. Uso como librería
-
-Puedes correr inferencia importando el módulo desde Python.
-
-### Ejemplo
+Estructura
 
 ```python
-from src.inference import load_model, infer
-
-model = load_model()
-infer(
-    image_path="examples/real_011_Casa_de_Cundinamarca_png.rf.b1da1d02fbd326e25e036adc2c977503.jpg",
-    model=model,
-    out_path="outputs/"
-)
+from src.inference import infer
+res = inf.infer(image_path = './input_path/image.jpg' )
 ```
 
-Esto carga el modelo configurado por defecto y guarda la imagen anotada en la carpeta `outputs/`.
+**Ejemplo**
+```python
+from src import inference as inf
+res = inf.infer(image_path = './images/valid/images/real_041_MI_HOUSE_png.rf.0e452c2b0051f1281e7c048c3f3d5605.jpg'
+                ,out_path= './examples' )
+```
 
----
 
-## 6. Uso desde línea de comandos
-
-El script `src/inference.py` expone una interfaz CLI.
-
-### Sintaxis
+### Mediante terminal (CLI)
 
 ```bash
-python src/inference.py <ruta_imagen> --output <ruta_salida>
+python src/inference.py ./input_path/image.jpg --output./output_path
+
 ```
 
-### Ejemplo
+**Ejemplo**
+```bash
+python ./src/inference.py images\valid\images\real_011_Casa_de_Cundinamarca_png.rf.b1da1d02fbd326e25e036adc2c977503.jpg -o./examples
+```
+
+### Mediante API
+
+Debe hacer la conexión a la API. Asegurese de estar en el directorio de la API para poder iniciarla
+```bash
+cd ./API
+```
+
+Estando en el directorio `./API`, puede ejecutar lo siguiente para iniciar el servicio.
 
 ```bash
-python src/inference.py examples/real_011_Casa_de_Cundinamarca_png.rf.b1da1d02fbd326e25e036adc2c977503.jpg --output outputs/
+uvicorn API_inference:app --reload
 ```
 
-También puedes usar la forma corta:
+**Ejemplo**
 
-```bash
-python src/inference.py examples/real_011_Casa_de_Cundinamarca_png.rf.b1da1d02fbd326e25e036adc2c977503.jpg -o outputs/
-```
+En nuestro ejemplo, el servicio quedó en `http://127.0.0.1:8000/docs/`, de donde podemos probar los mètodos predict y predic_image. (Revise en consola donde esta corriendo la aplicaciòn)
 
-Si `--output` apunta a un directorio, el script guarda la imagen anotada allí con el mismo nombre original.  
-Si `--output` apunta a un archivo, se guarda exactamente en esa ruta.
+![Step1API](./examples/API_tutorial_01.png)
+
+En este ejemplo, probaremos el método predict_image.Puede cargar el archivo mediante el toolkit de adjuntar.
+
+![Step2API](./examples/API_tutorial_02.png)
+
+Con el archivo adjunto, haga el llamado mediante el botòn de Exceute
+
+![Step3API](./examples/API_tutorial_03.png)
+
+Verá que el método trae una ventana emergente con la información de salida
+
+
+![Step4API](./examples/API_tutorial_04.png)
+
+
+# Resultados (métricas) y ejemplos de detección
+
+## Resultados (métricas) y ejemplos de detección
+
+El modelo fue evaluado utilizando el conjunto de validación definido en el dataset.
+
+Las métricas principales utilizadas fueron:
+
+- **Precision**
+- **Recall**
+- **Falsos Positivos (FP)**
+- **Falsos Negativos (FN)**
+
+Resultados obtenidos:
+
+| Métrica | Valor |
+|------|------|
+| Precision | 0.8571 |
+| Recall |  0.7500 |
+| mAP@0.5 |  0.838 |
+| False Positives | 2 |
+| False Negatives | 4 |
+
+Interpretación de las métricas
+
+|Métrica | Valor | Interpretación |
+|------|------|------|
+|Precision | 0.8571 | 85.7% de las detecciones son correctas
+|Recall | 0.75 | detecta el 75% de las casas reales
+|mAP@0.5 | 0.838 |	El modelo tiene 83.8 % de precisión promedio en detección de casas con IoU ≥ 0.5.
+
+
+En la siguiente imágen, el modelo logra identificar correctamente la fachadas de una casa presente en la escena.
+
+![Ejemplo_TP](./examples/real_041_MI_HOUSE_png.rf.0e452c2b0051f1281e7c048c3f3d5605.jpg)
+
+### Ejemplos de errores de detección
+
+Se identificaron algunos casos donde el modelo presenta errores y los guarda en la carpeta error_analysis.
+
+#### **Falsos positivos (FP)**  
+El modelo detecta una casa en objetos visualmente similares, como edificios o estructuras arquitectónicas.
+
+**Ejemplo**
+
+ En rojo se muestran las predicciones, y en verde las etiquetas.
+
+![Ejemplo_FP](./error_analysis/false_positives/real_049_Providencia_Colombia_-_panoramio_29__png.rf.c52bfec95485cfc75f327cb31ee0c41e.jpg)
+
+**Falsos negativos (FN)**  
+El modelo no detecta casas cuando:
+
+- la fachada está parcialmente oculta
+- la iluminación es baja
+- la casa aparece muy pequeña en la imagen
+
+**Ejemplo**
+
+ En verde se muestran las predicciones, y en rojo las etiquetas.
+
+![Ejemplo FN](./error_analysis/false_negatives/real_076_Kogisiedlung_png.rf.511c7d5c9b0d54fc0a922aa31e4beb32.jpg)
+
+# Limitaciones y pasos futuros recomendados
+
+### Limitaciones del modelo
+
+A pesar de los resultados obtenidos, el modelo presenta algunas limitaciones:
+
+1. **Tamaño reducido del dataset**
+
+El modelo fue entrenado con un conjunto de aproximadamente 69 imágenes, lo cual es un tamaño limitado para entrenar modelos de detección de objetos robustos.
+
+Esto puede provocar:
+
+- sobreajuste (overfitting)
+- baja capacidad de generalización a nuevas imágenes.
+
+2. **Variabilidad limitada en las escenas**
+
+Las imágenes del dataset no cubren completamente todas las variaciones posibles de:
+
+- arquitectura
+- iluminación
+- ángulos de cámara
+- contextos urbanos y rurales.
+
+3. **Confusión con estructuras similares**
+
+El modelo puede confundir casas con:
+
+- edificios
+- locales comerciales
+- construcciones con fachada similar.
+- Reflejos en agua de la misma casa
+
+4. **Resolución de imagen**
+
+En imágenes donde la casa aparece muy pequeña, el modelo presenta dificultades para detectar correctamente el objeto.
 
 ---
 
-## 7. Entrenamiento
+### Trabajo futuro
 
-El script de entrenamiento del repositorio es:
+Para mejorar el desempeño del modelo se recomiendan las siguientes acciones:
 
-```text
-src/train_yolo.py
-```
+**1. Ampliar el dataset**
 
-Para lanzar el entrenamiento:
+Recolectar y etiquetar más imágenes de casas en diferentes contextos:
 
-```bash
-python src/train_yolo.py
-```
+- urbano
+- rural
+- diferentes regiones de Colombia
+- diferentes condiciones de iluminación.
 
-De acuerdo con la implementación actual, el script:
+Idealmente aumentar el dataset a **200–500 imágenes**.
 
-- carga el modelo base desde `models/`,
-- prepara / valida directorios,
-- intenta descomprimir el dataset,
-- entrena el modelo,
-- y copia los mejores pesos entrenados a la ruta del modelo final.
+**2. Aplicar técnicas de aumento de datos**
 
-Si necesitas cambiar hiperparámetros como `epochs`, `imgsz` o `batch`, puedes modificar la función `train()` o `train_model()` dentro de `src/train_yolo.py`.
+Utilizar técnicas de *data augmentation* como:
 
----
+- rotaciones
+- cambios de brillo y contraste
+- escalamiento
+- transformaciones geométricas.
 
-## 8. Validación y análisis de errores
+**3. Ajuste de hiperparámetros**
 
-El proyecto incluye el script:
+Realizar experimentación con diferentes valores de:
 
-```text
-src/validation.py
-```
+- número de épocas
+- tamaño de imagen
+- learning rate
+- batch size.
 
-Este módulo implementa lógica para:
+**4. Evaluación con más métricas**
 
-- leer etiquetas en formato YOLO,
-- convertir bounding boxes a formato absoluto,
-- calcular IoU,
-- extraer predicciones del resultado de Ultralytics,
-- clasificar detecciones en TP / FP / FN,
-- y apoyar el análisis visual de errores.
+Incorporar análisis adicionales como:
 
-Según la estructura del repositorio, los artefactos relacionados con errores se almacenan en:
+- matriz de confusión
+- curvas Precision-Recall
+- evaluación en datasets externos.
 
-```text
-error_analysis/
-```
 
-Esto permite revisar falsos positivos y falsos negativos para entender mejor el comportamiento del modelo.
 
----
 
-## 9. API con FastAPI
 
-La API está implementada en:
 
-```text
-API/API_inference.py
-```
 
-### Levantar el servidor
 
-```bash
-uvicorn API.API_inference:app --reload
-```
 
-### Endpoints principales
 
-#### `GET /`
-Devuelve información general de la API.
 
-#### `POST /predict`
-Recibe una imagen y retorna un JSON con las detecciones.
 
-#### `POST /predict/image`
-Recibe una imagen y devuelve la imagen anotada con bounding boxes.
-
----
-
-## 10. Ejemplo de consumo de la API
-
-Una vez el servidor esté corriendo, puedes probar el endpoint `/predict` desde Swagger UI o con `curl`.
-
-### Ejemplo con `curl`
-
-```bash
-curl -X POST "http://127.0.0.1:8000/predict" \
-  -H "accept: application/json" \
-  -H "Content-Type: multipart/form-data" \
-  -F "archivo=@examples/real_011_Casa_de_Cundinamarca_png.rf.b1da1d02fbd326e25e036adc2c977503.jpg"
-```
-
-### Ejemplo para obtener imagen anotada
-
-```bash
-curl -X POST "http://127.0.0.1:8000/predict/image" \
-  -H "accept: image/jpeg" \
-  -H "Content-Type: multipart/form-data" \
-  -F "archivo=@examples/real_011_Casa_de_Cundinamarca_png.rf.b1da1d02fbd326e25e036adc2c977503.jpg" \
-  --output prediccion.jpg
-```
-
----
-
-## 11. Modelos
-
-La carpeta `models/` contiene:
-
-- `yolo11n.pt`: modelo base,
-- `house_yolo.pt`: pesos del modelo entrenado,
-- historial / artefactos de entrenamiento en `runs_house_model/ house_yolo`.
-
-El modelo de inferencia usa por defecto los pesos configurados en `src/utils.py`.
-
----
-
-## 12. Notas importantes
-
-- El nombre correcto de la carpeta es `error_analysis/`, no `error analysis/`.
-- El script correcto de entrenamiento es `src/train_yolo.py`, no `src/train.py`.
-- El archivo de configuración es `images/data.yaml`, no `data.yalm`.
-- La carpeta correcta es `images/conf/`, no `confg`.
-- La carpeta correcta es `models/`, no `modesl/`.
-- Para reproducibilidad completa, conviene documentar mejor de dónde sale el dataset y cómo reconstruir `train/`, `valid/` y `test/` si no vienen versionados en Git.
-
----
-
-## 13. Mejoras recomendadas para el repositorio
-
-Algunas mejoras que harían este proyecto más fácil de usar por terceros:
-
-1. Corregir el `requirements.txt` para que tenga una dependencia por línea.
-2. Documentar explícitamente cómo se obtiene o descomprime el dataset.
-3. Agregar ejemplos reproducibles de entrenamiento y validación.
-4. Incluir una sección de métricas con trazabilidad clara al script o experimento que las generó.
-5. Agregar una sección de solución de problemas comunes.
-
----
-
-## 14. Autores
-
-Repositorio desarrollado para el taller de detección de casas con YOLO.
