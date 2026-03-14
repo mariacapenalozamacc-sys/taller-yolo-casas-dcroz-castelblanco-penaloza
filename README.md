@@ -303,4 +303,4 @@ Algunas mejoras que harían este proyecto más fácil de usar por terceros:
 
 ## 14. Autores
 
-Repositorio desarrollado para el taller de detección de casas con YOLO por Miguel CastelBlanco, ANthony D'croz y Maria Camila Peñaloza.
+Repositorio desarrollado para el taller de detección de casas con YOLO.
